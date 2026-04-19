@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Attendance</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-hero" id="loginHero">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="role-emoji" id="roleEmoji">🛡️</div>
+      <div class="role-title" id="roleTitle">Admin Portal</div>
+      <div class="role-sub" id="roleSub">Full system control</div>
+    </div>
+    <div class="login-form">
+      <div id="adminFields">
+        <div class="field-group">
+          <label>👤 Username</label>
+          <input type="text" id="username" placeholder="Enter username">
+        </div>
+      </div>
+      <div id="teacherFields" style="display:none">
+        <div class="field-group">
+          <label>📧 Email</label>
+          <input type="email" id="teacherEmail" placeholder="Enter email">
+        </div>
+        <div class="field-group">
+          <label>🏫 Department</label>
+          <select id="teacherDept">
+            <option value="">Select Department</option>
+            <option>CSE</option><option>ECE</option><option>MECH</option>
+            <option>CIVIL</option><option>IT</option><option>EEE</option>
+          </select>
+        </div>
+      </div>
+      <div id="studentFields" style="display:none">
+        <div class="field-group">
+          <label>📧 Email</label>
+          <input type="email" id="studentEmail" placeholder="Enter email">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>🔒 Password</label>
+        <input type="password" id="password" placeholder="Enter password">
+      </div>
+      <button class="btn-main" id="loginBtn" onclick="doLogin()">Sign In</button>
+      <div class="role-switcher">
+        <button class="rsw active" id="rsw-admin" onclick="switchRole('admin')">🛡️ Admin</button>
+        <button class="rsw" id="rsw-teacher" onclick="switchRole('teacher')">👨‍🏫 Teacher</button>
+        <button class="rsw" id="rsw-student" onclick="switchRole('student')">🎓 Student</button>
+      </div>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+  </div>
+</div>
+<script src="js/login.js"></script>
+</body>
+</html>

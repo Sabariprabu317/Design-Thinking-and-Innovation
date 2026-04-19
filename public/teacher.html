@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-emoji">👨‍🏫</span>
+      <div>
+        <div class="topbar-title" id="tName">Teacher</div>
+        <div class="topbar-sub" id="tDeptShow"></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showNav('profile')">👨‍🏫<span>Profile</span></button>
+    <button class="nav-tab" onclick="showNav('qr')">📲<span>QR</span></button>
+    <button class="nav-tab" onclick="showNav('attendance')">📋<span>Attend.</span></button>
+    <button class="nav-tab" onclick="showNav('marks')">📊<span>Marks</span></button>
+    <button class="nav-tab" onclick="showNav('activity')">📝<span>Activity</span></button>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="nav-profile" class="nav-content active">
+    <div class="hero-card dark">
+      <div class="hero-orb"></div>
+      <div class="hero-badge">🟢 Online · Active</div>
+      <div class="hero-name" id="heroName">Dr. Teacher</div>
+      <div class="hero-role" id="heroRole">Department · Faculty</div>
+      <div class="hero-avatar" id="heroAvatar">👨‍🏫</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card cyan"><div class="stat-num" id="subCount">0</div><div class="stat-lbl">Subjects</div></div>
+      <div class="stat-card neutral"><div class="stat-num" id="clsCount">0</div><div class="stat-lbl">Classes</div></div>
+      <div class="stat-card green"><div class="stat-num" id="stuCount">0</div><div class="stat-lbl">Students</div></div>
+    </div>
+    <div class="profile-pic-section">
+      <img id="profileImg" src="" alt="" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #67e8f9;margin:0 auto 10px;display:block">
+      <label class="btn-outline" style="cursor:pointer;display:block;text-align:center">
+        📷 Upload Profile Photo
+        <input type="file" id="picInput" accept="image/*" style="display:none" onchange="uploadPic('teacher')">
+      </label>
+    </div>
+    <div class="subject-list" id="subjectDisplay"></div>
+  </div>
+
+  <!-- QR GENERATE -->
+  <div id="nav-qr" class="nav-content">
+    <div class="form-card">
+      <div class="form-title">📲 Generate QR Code</div>
+      <div class="field-group"><label>Subject & Class</label>
+        <select id="qrSubject"></select>
+      </div>
+      <button class="btn-main" onclick="generateQR()">⚡ Generate QR</button>
+      <div id="qrDisplay" style="display:none">
+        <div class="qr-card">
+          <div class="qr-label" id="qrLabel"></div>
+          <div id="qrCode"></div>
+          <div class="countdown-wrap">
+            <div class="cd-ring" id="cdRing">30</div>
+            <div class="cd-bar-wrap"><div class="cd-bar" id="cdBar"></div></div>
+          </div>
+          <div class="cd-text" id="cdText">Expires in 30 seconds</div>
+        </div>
+        <button class="btn-danger" onclick="generateQR()">🔄 Regenerate QR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTENDANCE -->
+  <div id="nav-attendance" class="nav-content">
+    <div class="form-card">
+      <div class="form-title">📋 View Attendance</div>
+      <div class="field-group"><label>Subject & Class</label><select id="attSubject"></select></div>
+      <button class="btn-main" onclick="loadAttendance()">📥 Load Attendance</button>
+    </div>
+    <div id="attendanceTable"></div>
+    <div class="form-card" style="margin-top:12px">
+      <div class="form-title">✏️ Manual Entry</div>
+      <div class="field-group"><label>Roll No</label><input type="text" id="manRoll" placeholder="21CSA001"></div>
+      <div class="field-group"><label>Subject & Class</label><select id="manSubject"></select></div>
+      <div class="btn-row">
+        <button class="btn-main btn-green" onclick="manualAttendance('present')">✅ Mark Present</button>
+        <button class="btn-main btn-danger" onclick="manualAttendance('absent')">❌ Mark Absent</button>
+      </div>
+      <div class="msg" id="manMsg"></div>
+    </div>
+  </div>
+
+  <!-- MARKS -->
+  <div id="nav-marks" class="nav-content">
+    <div class="form-card">
+      <div class="form-title">📊 Add / Update Marks</div>
+      <div class="field-group"><label>Roll No</label><input type="text" id="mRoll" placeholder="21CSA001"></div>
+      <div class="field-group"><label>Subject & Class</label><select id="mSubject"></select></div>
+      <div class="field-group"><label>Exam Type</label>
+        <select id="mExamType">
+          <option>CIA-1</option><option>CIA-2</option><option>CIA-3</option>
+          <option>Model Exam</option><option>End Sem</option><option>Assignment</option>
+        </select>
+      </div>
+      <div class="field-group"><label>Max Marks</label><input type="number" id="mMax" placeholder="100"></div>
+      <div class="field-group"><label>Marks Scored</label><input type="number" id="mScored" placeholder="85"></div>
+      <div class="field-group"><label>Remarks (optional)</label><input type="text" id="mRemarks" placeholder="Good performance"></div>
+      <button class="btn-main" onclick="addMarks()">💾 Save Marks</button>
+      <div class="msg" id="mMsg"></div>
+    </div>
+    <div class="form-card" style="margin-top:12px">
+      <div class="form-title">📋 View Class Marks</div>
+      <div class="field-group"><label>Subject & Class</label><select id="viewMSubject"></select></div>
+      <div class="field-group"><label>Exam Type</label>
+        <select id="viewMExam">
+          <option>CIA-1</option><option>CIA-2</option><option>CIA-3</option>
+          <option>Model Exam</option><option>End Sem</option><option>Assignment</option>
+        </select>
+      </div>
+      <button class="btn-main" onclick="loadMarks()">📥 Load Marks</button>
+    </div>
+    <div id="marksTable"></div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div id="nav-activity" class="nav-content">
+    <div class="form-card">
+      <div class="form-title">📝 Post Activity</div>
+      <div class="field-group"><label>Subject & Class</label><select id="actSubject"></select></div>
+      <div class="field-group"><label>Content</label>
+        <textarea id="actContent" placeholder="Type activity or announcement..." rows="4"></textarea>
+      </div>
+      <button class="btn-main" onclick="postActivity()">📤 Post</button>
+      <div class="msg" id="actMsg"></div>
+    </div>
+    <div id="activitiesList"></div>
+  </div>
+</div>
+<script src="js/teacher.js"></script>
+</body>
+</html>

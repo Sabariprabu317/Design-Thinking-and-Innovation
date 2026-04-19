@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-emoji">🎓</span>
+      <div>
+        <div class="topbar-title" id="sName">Student</div>
+        <div class="topbar-sub" id="sRollShow"></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showNav('profile')">🎓<span>Profile</span></button>
+    <button class="nav-tab" onclick="showNav('scan')">📷<span>Scan QR</span></button>
+    <button class="nav-tab" onclick="showNav('attendance')">📊<span>History</span></button>
+    <button class="nav-tab" onclick="showNav('marks')">🏆<span>Marks</span></button>
+    <button class="nav-tab" onclick="showNav('activity')">📚<span>Activity</span></button>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="nav-profile" class="nav-content active">
+    <div class="hero-card dark">
+      <div class="hero-orb" style="background:#059669"></div>
+      <div class="hero-badge">🟢 <span id="heroBatch">Batch</span></div>
+      <div class="hero-name" id="heroSName">Student</div>
+      <div class="hero-role" id="heroSRole">Roll · Dept</div>
+      <div class="hero-avatar">🎓</div>
+    </div>
+    <div class="att-overview" id="attOverview"></div>
+    <div class="profile-pic-section">
+      <img id="profileImg" src="" alt=""
+        style="width:80px;height:80px;border-radius:50%;object-fit:cover;
+               border:3px solid #34d399;margin:0 auto 10px;display:none">
+      <label class="btn-outline" style="cursor:pointer;display:block;text-align:center">
+        📷 Upload Profile Photo
+        <input type="file" id="picInput" accept="image/*"
+          style="display:none" onchange="uploadPic()">
+      </label>
+    </div>
+  </div>
+
+  <!-- SCAN QR -->
+  <div id="nav-scan" class="nav-content">
+    <div class="scan-card dark">
+      <div class="scan-hint">Point your back camera at teacher's QR code</div>
+      <div id="qr-reader"></div>
+      <div class="scan-note" style="margin-top:8px">
+        Back camera only · No file upload
+      </div>
+    </div>
+    <div id="scanResult"></div>
+  </div>
+
+  <!-- ATTENDANCE HISTORY -->
+  <div id="nav-attendance" class="nav-content">
+    <div class="form-card">
+      <div class="form-title">📊 My Attendance</div>
+      <div class="field-group">
+        <label>Subject</label>
+        <select id="attSubjectStu" onchange="loadStudentAttendance()">
+          <option value="">All Subjects</option>
+        </select>
+      </div>
+    </div>
+    <div id="studentAttTable"></div>
+  </div>
+
+  <!-- MARKS -->
+  <div id="nav-marks" class="nav-content">
+    <div class="form-card">
+      <div class="form-title">🏆 My Marks</div>
+      <div class="field-group">
+        <label>Subject</label>
+        <select id="markSubjectStu" onchange="loadStudentMarks()">
+          <option value="">All Subjects</option>
+        </select>
+      </div>
+    </div>
+    <div id="studentMarksTable"></div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div id="nav-activity" class="nav-content">
+    <div class="form-card">
+      <div class="form-title">📚 Curriculum Activities</div>
+      <div class="field-group">
+        <label>Subject</label>
+        <select id="actSubjectStu" onchange="loadStudentActivity()">
+          <option value="">All Subjects</option>
+        </select>
+      </div>
+    </div>
+    <div id="studentActivityList"></div>
+  </div>
+</div>
+<script src="js/student.js"></script>
+</body>
+</html>

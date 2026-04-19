@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-emoji">🛡️</span>
+      <div>
+        <div class="topbar-title">Admin Dashboard</div>
+        <div class="topbar-sub">System Overview</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="tab-bar">
+  <button class="tab active" id="btn-teachers" onclick="showTab('teachers')">👨‍🏫 Teachers</button>
+  <button class="tab" id="btn-students" onclick="showTab('students')">🎓 Students</button>
+  <button class="tab" id="btn-addTeacher" onclick="showTab('addTeacher')">➕ Add Teacher</button>
+  <button class="tab" id="btn-addStudent" onclick="showTab('addStudent')">➕ Add Student</button>
+</div>
+
+  <!-- Teachers List -->
+  <div id="tab-teachers" class="tab-content active">
+    <div class="section-title">All Teachers</div>
+    <div id="teachersList"></div>
+  </div>
+
+  <!-- Students List -->
+  <div id="tab-students" class="tab-content">
+    <div class="section-title">All Students</div>
+    <div id="studentsList"></div>
+  </div>
+
+  <!-- Add Teacher -->
+  <!-- Add Teacher -->
+<div id="tab-addTeacher" class="tab-content">
+  <div class="form-card">
+    <div class="form-title">👨‍🏫 Add New Teacher</div>
+    <div class="field-group">
+      <label>Full Name</label>
+      <input type="text" id="tName" placeholder="Dr. Rajesh Kumar">
+    </div>
+    <div class="field-group">
+      <label>Email</label>
+      <input type="email" id="tEmail" placeholder="teacher@college.edu">
+    </div>
+    <div class="field-group">
+      <label>Password</label>
+      <input type="password" id="tPass" placeholder="Set password">
+    </div>
+    <div class="field-group">
+      <label>Department</label>
+      <select id="tDept">
+        <option value="">Select Department</option>
+        <option>CSE</option>
+        <option>ECE</option>
+        <option>MECH</option>
+        <option>CIVIL</option>
+        <option>IT</option>
+        <option>EEE</option>
+      </select>
+    </div>
+
+    <div class="section-title" style="margin-top:14px;margin-bottom:8px">
+      📚 Subjects & Classes
+    </div>
+    <div id="subjectList"></div>
+    <button class="btn-outline" type="button" onclick="addSubjectRow()" style="margin-bottom:12px">
+      ➕ Add Subject & Class
+    </button>
+
+    <button class="btn-main" type="button" onclick="addTeacher()">
+      ✅ Save Teacher
+    </button>
+    <div class="msg" id="tMsg"></div>
+  </div>
+</div>
+
+  <!-- Add Student -->
+  <div id="tab-addStudent" class="tab-content">
+    <div class="form-card">
+      <div class="form-title">🎓 Add New Student</div>
+      <div class="field-group"><label>Full Name</label><input type="text" id="sName" placeholder="Arjun Suresh"></div>
+      <div class="field-group"><label>Roll Number</label><input type="text" id="sRoll" placeholder="21CSA001"></div>
+      <div class="field-group"><label>Email</label><input type="email" id="sEmail" placeholder="student@college.edu"></div>
+      <div class="field-group">
+        <label>Department</label>
+        <select id="sDept">
+          <option value="">Select</option>
+          <option>CSE</option><option>ECE</option><option>MECH</option>
+          <option>CIVIL</option><option>IT</option><option>EEE</option>
+        </select>
+      </div>
+      <div class="field-group"><label>Class Section</label><input type="text" id="sClass" placeholder="CSE-A"></div>
+      <div class="field-group"><label>Password</label><input type="password" id="sPass" placeholder="Set password"></div>
+      <button class="btn-main btn-green" onclick="addStudent()">✅ Save Student</button>
+      <div class="msg" id="sMsg"></div>
+    </div>
+  </div>
+</div>
+<script src="js/admin.js"></script>
+</body>
+</html>
