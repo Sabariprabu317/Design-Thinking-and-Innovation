@@ -160,44 +160,121 @@ async function loadAttendance() {
   const sel = document.getElementById('attSubject');
   if (!sel || !sel.value) return;
   const [subject, className] = sel.value.split('|');
+  const dateInput = document.getElementById('attDate');
+  const selectedDate = dateInput ? dateInput.value : '';
 
   try {
-    const records = await API(`/api/teacher/attendance?subject=${subject}&className=${className}`).then(r => r.json());
+    const records = await API(
+      `/api/teacher/attendance?subject=${subject}&className=${className}`
+    ).then(r => r.json());
+
     const el = document.getElementById('attendanceTable');
 
     if (!records.length) {
-      el.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px">No attendance records yet for this subject</p>';
+      el.innerHTML = `<p style="color:#94a3b8;text-align:center;padding:20px">
+        No attendance records yet for this subject</p>`;
       return;
     }
 
+    // Filter by date if selected
+    let filtered = records;
+    if (selectedDate) {
+      // Convert yyyy-mm-dd to d/m/yyyy format matching DB
+      const parts = selectedDate.split('-');
+      const year = parts[0];
+      const month = parseInt(parts[1]).toString(); // removes leading zero
+      const day = parseInt(parts[2]).toString();   // removes leading zero
+
+      // Try all possible formats stored in DB
+      const format1 = day + '/' + month + '/' + year;         // 30/4/2026
+      const format2 = day + '/' + month.padStart(2,'0') + '/' + year; // 30/04/2026
+      const format3 = day.padStart(2,'0') + '/' + month + '/' + year; // 30/4/2026
+      const format4 = day.padStart(2,'0') + '/' + month.padStart(2,'0') + '/' + year; // 30/04/2026
+
+      console.log('Looking for dates:', format1, format2, format3, format4);
+      console.log('DB dates sample:', records.slice(0,3).map(r => r.date));
+
+      filtered = records.filter(r =>
+        r.date === format1 ||
+        r.date === format2 ||
+        r.date === format3 ||
+        r.date === format4
+      );
+    }
+
+    if (!filtered.length) {
+      el.innerHTML = `
+        <div class="form-card" style="text-align:center;padding:24px">
+          <div style="font-size:40px;margin-bottom:10px">📅</div>
+          <div style="font-size:14px;font-weight:700;color:#0f172a">
+            No attendance found for this date
+          </div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:6px">
+            No records found for selected date and subject
+          </div>
+        </div>`;
+      return;
+    }
+
+    const presentCount = filtered.filter(r => r.status === 'present').length;
+    const absentCount = filtered.filter(r => r.status === 'absent').length;
+
     el.innerHTML = `
+      <div style="display:flex;gap:8px;padding:8px 0 12px">
+        <div class="stat-card green" style="flex:1">
+          <div class="stat-num">${presentCount}</div>
+          <div class="stat-lbl">Present</div>
+        </div>
+        <div class="stat-card neutral" style="flex:1">
+          <div class="stat-num">${absentCount}</div>
+          <div class="stat-lbl">Absent</div>
+        </div>
+        <div class="stat-card cyan" style="flex:1">
+          <div class="stat-num">${filtered.length}</div>
+          <div class="stat-lbl">Total</div>
+        </div>
+      </div>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
-            <tr><th>Roll No</th><th>Name</th><th>Date</th><th>Time</th><th>Method</th><th>Status</th></tr>
+            <tr>
+              <th>Roll No</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Method</th>
+              <th>Status</th>
+            </tr>
           </thead>
           <tbody>
-            ${records.map(r => `
+            ${filtered.map(r => `
               <tr>
                 <td>${r.rollNo}</td>
                 <td>${r.studentName}</td>
                 <td>${r.date}</td>
                 <td>${r.time}</td>
                 <td><span class="badge badge-cyan">${r.method}</span></td>
-                <td><span class="badge ${r.status === 'present' ? 'badge-green' : 'badge-red'}">${r.status}</span></td>
+                <td>
+                  <span class="badge ${r.status === 'present'
+                    ? 'badge-green' : 'badge-red'}">
+                    ${r.status === 'present' ? '✅ Present' : '❌ Absent'}
+                  </span>
+                </td>
               </tr>
             `).join('')}
           </tbody>
         </table>
       </div>`;
+
   } catch (err) {
     console.error('Load attendance error:', err);
   }
 }
-
-async function manualAttendance(status) {
+async function manualAttendance() {
   const rollNo = document.getElementById('manRoll').value.trim();
   const sel = document.getElementById('manSubject');
+  const dateInput = document.getElementById('manDate');
+  const statusSel = document.getElementById('manStatus');
   const msg = document.getElementById('manMsg');
 
   if (!rollNo) {
@@ -210,20 +287,34 @@ async function manualAttendance(status) {
     msg.className = 'msg err';
     return;
   }
+  if (!dateInput || !dateInput.value) {
+    msg.textContent = '❌ Select a date';
+    msg.className = 'msg err';
+    return;
+  }
 
   const [subject, className] = sel.value.split('|');
   const dept = teacherData.dept;
+  const status = statusSel.value;
+
+  // Convert yyyy-mm-dd to dd/mm/yyyy to match database format
+  const parts = dateInput.value.split('-');
+  const formattedDate = parts[2] + '/' + parts[1] + '/' + parts[0];
 
   try {
     const res = await API('/api/teacher/manual-attendance', {
       method: 'POST',
-      body: JSON.stringify({ rollNo, subject, className, dept, status })
+      body: JSON.stringify({
+        rollNo, subject, className, dept,
+        status, customDate: formattedDate
+      })
     });
     const data = await res.json();
     msg.textContent = res.ok ? '✅ ' + data.message : '❌ ' + data.message;
     msg.className = res.ok ? 'msg ok' : 'msg err';
     if (res.ok) {
       document.getElementById('manRoll').value = '';
+      document.getElementById('manDate').value = '';
       loadAttendance();
     }
   } catch (err) {

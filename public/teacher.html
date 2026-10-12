@@ -56,7 +56,8 @@
   <div id="nav-qr" class="nav-content">
     <div class="form-card">
       <div class="form-title">📲 Generate QR Code</div>
-      <div class="field-group"><label>Subject & Class</label>
+      <div class="field-group">
+        <label>Subject & Class</label>
         <select id="qrSubject"></select>
       </div>
       <button class="btn-main" onclick="generateQR()">⚡ Generate QR</button>
@@ -79,18 +80,41 @@
   <div id="nav-attendance" class="nav-content">
     <div class="form-card">
       <div class="form-title">📋 View Attendance</div>
-      <div class="field-group"><label>Subject & Class</label><select id="attSubject"></select></div>
+      <div class="field-group">
+        <label>Subject & Class</label>
+        <select id="attSubject"></select>
+      </div>
+      <div class="field-group">
+        <label>📅 Select Date (optional — leave empty to see all)</label>
+        <input type="date" id="attDate">
+      </div>
       <button class="btn-main" onclick="loadAttendance()">📥 Load Attendance</button>
     </div>
     <div id="attendanceTable"></div>
+
+    <!-- MANUAL ENTRY -->
     <div class="form-card" style="margin-top:12px">
       <div class="form-title">✏️ Manual Entry</div>
-      <div class="field-group"><label>Roll No</label><input type="text" id="manRoll" placeholder="21CSA001"></div>
-      <div class="field-group"><label>Subject & Class</label><select id="manSubject"></select></div>
-      <div class="btn-row">
-        <button class="btn-main btn-green" onclick="manualAttendance('present')">✅ Mark Present</button>
-        <button class="btn-main btn-danger" onclick="manualAttendance('absent')">❌ Mark Absent</button>
+      <div class="field-group">
+        <label>Roll No</label>
+        <input type="text" id="manRoll" placeholder="21CSA001">
       </div>
+      <div class="field-group">
+        <label>Subject & Class</label>
+        <select id="manSubject"></select>
+      </div>
+      <div class="field-group">
+        <label>📅 Select Date</label>
+        <input type="date" id="manDate">
+      </div>
+      <div class="field-group">
+        <label>Status</label>
+        <select id="manStatus">
+          <option value="present">✅ Present</option>
+          <option value="absent">❌ Absent</option>
+        </select>
+      </div>
+      <button class="btn-main" onclick="manualAttendance()">✏️ Mark Attendance</button>
       <div class="msg" id="manMsg"></div>
     </div>
   </div>
@@ -99,24 +123,44 @@
   <div id="nav-marks" class="nav-content">
     <div class="form-card">
       <div class="form-title">📊 Add / Update Marks</div>
-      <div class="field-group"><label>Roll No</label><input type="text" id="mRoll" placeholder="21CSA001"></div>
-      <div class="field-group"><label>Subject & Class</label><select id="mSubject"></select></div>
-      <div class="field-group"><label>Exam Type</label>
+      <div class="field-group">
+        <label>Roll No</label>
+        <input type="text" id="mRoll" placeholder="21CSA001">
+      </div>
+      <div class="field-group">
+        <label>Subject & Class</label>
+        <select id="mSubject"></select>
+      </div>
+      <div class="field-group">
+        <label>Exam Type</label>
         <select id="mExamType">
           <option>CIA-1</option><option>CIA-2</option><option>CIA-3</option>
           <option>Model Exam</option><option>End Sem</option><option>Assignment</option>
         </select>
       </div>
-      <div class="field-group"><label>Max Marks</label><input type="number" id="mMax" placeholder="100"></div>
-      <div class="field-group"><label>Marks Scored</label><input type="number" id="mScored" placeholder="85"></div>
-      <div class="field-group"><label>Remarks (optional)</label><input type="text" id="mRemarks" placeholder="Good performance"></div>
+      <div class="field-group">
+        <label>Max Marks</label>
+        <input type="number" id="mMax" placeholder="100">
+      </div>
+      <div class="field-group">
+        <label>Marks Scored</label>
+        <input type="number" id="mScored" placeholder="85">
+      </div>
+      <div class="field-group">
+        <label>Remarks (optional)</label>
+        <input type="text" id="mRemarks" placeholder="Good performance">
+      </div>
       <button class="btn-main" onclick="addMarks()">💾 Save Marks</button>
       <div class="msg" id="mMsg"></div>
     </div>
     <div class="form-card" style="margin-top:12px">
       <div class="form-title">📋 View Class Marks</div>
-      <div class="field-group"><label>Subject & Class</label><select id="viewMSubject"></select></div>
-      <div class="field-group"><label>Exam Type</label>
+      <div class="field-group">
+        <label>Subject & Class</label>
+        <select id="viewMSubject"></select>
+      </div>
+      <div class="field-group">
+        <label>Exam Type</label>
         <select id="viewMExam">
           <option>CIA-1</option><option>CIA-2</option><option>CIA-3</option>
           <option>Model Exam</option><option>End Sem</option><option>Assignment</option>
@@ -131,8 +175,12 @@
   <div id="nav-activity" class="nav-content">
     <div class="form-card">
       <div class="form-title">📝 Post Activity</div>
-      <div class="field-group"><label>Subject & Class</label><select id="actSubject"></select></div>
-      <div class="field-group"><label>Content</label>
+      <div class="field-group">
+        <label>Subject & Class</label>
+        <select id="actSubject"></select>
+      </div>
+      <div class="field-group">
+        <label>Content</label>
         <textarea id="actContent" placeholder="Type activity or announcement..." rows="4"></textarea>
       </div>
       <button class="btn-main" onclick="postActivity()">📤 Post</button>
@@ -140,6 +188,7 @@
     </div>
     <div id="activitiesList"></div>
   </div>
+
 </div>
 <script src="js/teacher.js"></script>
 </body>

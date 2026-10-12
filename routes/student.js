@@ -105,7 +105,9 @@ router.post('/scan-qr', auth, async (req, res) => {
     }
 
     const now = new Date();
-    const today = now.toLocaleDateString('en-IN');
+    const rawToday = now.toLocaleDateString('en-IN');
+    const dp = rawToday.split('/');
+    const today = parseInt(dp[0]) + '/' + parseInt(dp[1]) + '/' + dp[2];
 
     const existing = await Attendance.findOne({
       studentId: student._id,

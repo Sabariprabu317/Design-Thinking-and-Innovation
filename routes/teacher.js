@@ -137,23 +137,30 @@ router.get('/attendance', auth, async (req, res) => {
 // ─── MANUAL ATTENDANCE ───
 router.post('/manual-attendance', auth, async (req, res) => {
   try {
-    const { rollNo, subject, className, dept, status } = req.body;
+    const { rollNo, subject, className, dept, status, customDate } = req.body;
     const student = await Student.findOne({ rollNo });
     if (!student) return res.status(404).json({ message: 'Student not found' });
 
     const now = new Date();
-    const today = now.toLocaleDateString('en-IN');
+    // Use custom date if provided, otherwise use today
+    const rawDate = customDate || now.toLocaleDateString('en-IN');
+// Normalize date to d/m/yyyy format
+    const dateParts = rawDate.split('/');
+    const today = parseInt(dateParts[0]) + '/' + parseInt(dateParts[1]) + '/' + dateParts[2];
+    const time = now.toLocaleTimeString('en-IN');
 
     const existing = await Attendance.findOne({
       studentId: student._id, subject, className, date: today
     });
 
     if (existing) {
-      existing.status = status;
-      existing.method = 'manual';
-      await existing.save();
-      return res.json({ message: '✅ Attendance updated' });
-    }
+  existing.status = status;
+  existing.method = 'manual';
+  await existing.save();
+  return res.json({
+    message: `✅ Attendance updated to ${status} for ${student.name}`
+  });
+}
 
     await Attendance.create({
       studentId: student._id,
@@ -162,12 +169,14 @@ router.post('/manual-attendance', auth, async (req, res) => {
       teacherId: req.user.id,
       subject, className, dept,
       date: today,
-      time: now.toLocaleTimeString('en-IN'),
+      time: time,
       method: 'manual',
       status
     });
 
-    res.json({ message: '✅ Attendance marked manually' });
+    res.json({
+      message: `Attendance marked ${status} for ${student.name} on ${today}`
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
